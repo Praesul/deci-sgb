@@ -19,8 +19,8 @@ def iter_arrows(dummy: tuple, grid: np.ndarray) -> np.ndarray:
     while arrow_count < 4:
         arrow_attempts = 0
         while arrow_attempts < 5:
-            y_shift = random.randint(-1, 1)
-            x_shift = random.randint(-1, 1)
+            y_shift = random.randint(-2, 2)
+            x_shift = random.randint(-2, 2)
             arrow = (dummy[0] + y_shift, dummy[1] + x_shift)
 
             if grid[arrow[0], arrow[1]] == 0 or arrow_attempts == 4:
@@ -46,20 +46,15 @@ def iter_dummies(dummies: list[tuple], grid: np.ndarray | None = None) -> np.nda
     return grid
 
 
-def count_arrows_landed(npc_size: int, npc_sw: tuple, grid: np.ndarray) -> int:
-    arrows_landed = 0
-    for i in range(npc_sw[0] - npc_size + 1, npc_sw[0] + 1):
-        for j in range(npc_sw[1], npc_sw[1] + npc_size):
-            arrows_landed += grid[i][j]
-    return arrows_landed
-
-
 def calc_sgb(
     dummies: list[tuple],
     npc_sw: tuple,
     npc_size: int = 3,
     n_players: int = 1,
 ) -> float:
+    """
+    Generates arrows for each target and counts the number that land on the boss divided by the number of players.
+    """
     grid = np.zeros((9, 9), dtype=int)
     for _ in range(n_players):
         grid = iter_dummies(dummies, grid)
@@ -89,7 +84,7 @@ def run_monte_carlo(
     return total_arrows / n_simulations
 
 
-def draw_dummies(dummies: list[tuple]):
+def draw_dummies(dummies: list[tuple]) -> None:
     """
     Display the dummy locations in a 2d array.
     """
@@ -99,9 +94,9 @@ def draw_dummies(dummies: list[tuple]):
     print(grid)
 
 
-def test_config(dummies: list[tuple], npc_sw, message: str):
+def test_config(dummies: list[tuple], npc_sw, message: str) -> None:
     """
-    Run multiple tests on a particular dummy layout and average it.
+    Convenience function for running multiple tests and comparing dummy layouts.
     """
     arrows_landed = run_monte_carlo(
         dummies,
@@ -120,7 +115,7 @@ def p4_configs():
         "P4 current dummies",
     )
     test_config(
-        [(3, 3), (3, 4), (3, 5), (4, 3), (4, 4), (4, 4), (4, 5)],
+        [(3, 4), (3, 5), (4, 4), (4, 4), (4, 5), (5, 4), (5, 5)],
         (4, 4),
         "P4 block south dummies Solak S",
     )
